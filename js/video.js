@@ -23,6 +23,7 @@ navigator.mediaDevices.getUserMedia(constraints)
 //
 const recButton = document.querySelector(".rec");
 const stopButton = document.querySelector(".stop");
+const selectDuration = document.querySelector("#video-size");
 // mediastream capture frames rate (optional)
 var stream = video.captureStream(25);
 var recordedChunks = [];
@@ -32,20 +33,26 @@ mediaRecorder = new MediaRecorder(stream, options);
 //
 // button record
 recButton.onclick = function(event){
+  startRecord(selectDuration.value);
+};
+// start record function 
+function startRecord(duration) {
   mediaRecorder.ondataavailable = handleDataAvailable;
   mediaRecorder.start();
-  this.classList.add('record');
-  timer(20);
-};
+  recButton.classList.add('record');
+  selectDuration.classList.replace('show','hide');
+  time.innerHTML = `0:${duration}`;
+  timer(duration);
+}
 // stop record function
 function stopRecord() {
   mediaRecorder.stop();
   recButton.classList.remove('record');
+  selectDuration.classList.replace('hide','show');
   recordedChunks = [];
 }
 //
 function handleDataAvailable(event) {
-  console.log("data-available");
   if (event.data.size > 0) {
     recordedChunks.push(event.data);
     console.log(recordedChunks);
@@ -94,7 +101,7 @@ function timer(sec) {
     if(!seconds){
       clearInterval(interval);
       stopRecord();
-      time.innerHTML = `0:20`;
+      time.innerHTML = `0:${selectDuration.value}`;
       //alert("Done, now you can download your video and share it!")
     }
   }, 1000)
