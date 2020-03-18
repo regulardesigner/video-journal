@@ -72,7 +72,7 @@ function download() {
   document.body.appendChild(a);
   a.style = "display: none";
   a.href = url;
-  a.download = `daily_journal_${month}_${day}_${year}_${hours}h_${minutes}m_${seconds}s_.webm`;
+  a.download = `daily_journal_${month}_${day}_${year}_${hours}h_${minutes}m_${seconds}s_.mp4`;
   a.click();
   window.URL.revokeObjectURL(url);
 }
