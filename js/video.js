@@ -1,14 +1,17 @@
 const constraints = {
   audio: true,
   video: {
-    width: 512,
-    height: 512
+    facingMode: "user",
+    width: { exact: 512 },
+    height: { exact: 512 },
   }
 }
 // get the video element
 const video = document.querySelector('video');
 // get timer
 const time = document.querySelector('.timer');
+//
+!navigator.mediaRecorder || alert("Your browser support mediaRecorder");
 //
 navigator.mediaDevices.getUserMedia(constraints)
 .then(function(mediaStream) {
