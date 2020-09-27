@@ -1,29 +1,25 @@
-const constraints = {
-  audio: true,
-  video: {
-    facingMode: "user",
-    width: { exact: 512 },
-    height: { exact: 512 },
-  }
-}
+// video constraints config
+import constraints from './constraints'
 // get the video element
 const video = document.querySelector('video');
+
 // get timer
 const time = document.querySelector('.timer');
-//
-!navigator.mediaRecorder || alert("Your browser support mediaRecorder");
-//
+
+!navigator.mediaRecorder || alert("Your browser do not support mediaRecorder");
+
 navigator.mediaDevices.getUserMedia(constraints)
-.then(function(mediaStream) {
-  video.srcObject = mediaStream;
-  video.onloadedmetadata = function(e) {
-    video.play();
-  }
-})
-.catch(function(err) {
-  console.error(err.name + ": " + err.message);
-})
-//
+  .then(function(mediaStream) {
+    video.srcObject = mediaStream;
+    video.onloadedmetadata = function(e) {
+      video.play();
+    }
+  })
+  .catch(function(err) {
+    console.error(err.name + ": " + err.message);
+  })
+
+
 const recButton = document.querySelector(".rec");
 const stopButton = document.querySelector(".stop");
 const selectDuration = document.querySelector("#video-size");
