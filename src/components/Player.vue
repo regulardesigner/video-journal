@@ -5,9 +5,20 @@
         <span class="camera-view__intructions">{{ playerText }}</span>
         <video ref="player" class="player"></video>
       </div>
+      <button @click="startRecord" class="start">Start Rec</button>
+      <button @click="stopRecord" class="stop">Stop Rec</button>
       <div class="audio">audio</div>
       <div class="canvas">canvas</div>
     </div>
+    <section class="recorded-videos">
+      <div v-for="(savedVideo, index) in savedVideos" :key="savedVideo[1]" class="video">
+        <a @click.prevent="displayVideo(savedVideo[0], index)" :href="savedVideo[0]">
+          <video :ref="'video'+index" width='150' height="150">
+            <source :src="savedVideo[0]" type="video/webm">
+          </video>
+        </a>
+      </div>
+    </section>
   </section>
 </template>
 
@@ -20,20 +31,27 @@ export default {
   data() {
     return {
       playerStyle: "",
-      playerText: "Please autorize the camera."
+      playerText: "Please autorize the camera.",
+      mediaRecorder: '',
+      recordedChunks: [],
+      savedVideos: []
     };
   },
 
   mounted() {
-    this.videoPlayer();
+    this.videoPlayerInit();
   },
 
   methods: {
-    videoPlayer() {
+    videoPlayerInit() {
       const player = this.$refs.player;
+      const stream = player.captureStream(25);
+      const options = { mineType: "video/webm; codecs=vp9" };
+      this.mediaRecorder = new MediaRecorder(stream, options);
+
+      const ctx = this;
 
       if (navigator.mediaDevices) {
-        const ctx = this
         navigator.mediaDevices
           .getUserMedia(constraints)
           .then(function(mediaStream) {
@@ -51,6 +69,59 @@ export default {
       } else {
         ctx.playerText = "☠️ Outch, you'll need a camera.";
         ctx.playerStyle = "error";
+      }
+    },
+
+    startRecord() {
+      if (this.mediaRecorder.state === 'inactive') {
+        this.mediaRecorder.ondataavailable = this.saveVideoChunks;
+        this.mediaRecorder.start();
+      }
+    },
+
+    stopRecord() {
+      if (this.mediaRecorder.state === 'recording') {
+        this.mediaRecorder.stop();
+        this.recordedChunks = [];
+      }
+    },
+
+    saveVideoChunks(event) {
+      if (event.data.size > 0) {
+        this.recordedChunks.push(event.data);
+        this.downloadVideo();
+      } else {
+        // ...
+      }
+    },
+
+    downloadVideo() {
+      var date = new Date();
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const seconds = date.getSeconds();
+
+      const blob = new Blob(this.recordedChunks, {
+        type: "video/webm"
+      });
+
+      const videoFileName = `video_journal_${month}_${day}_${year}_${hours}h_${minutes}m_${seconds}s_.mp4`;
+
+      const url = URL.createObjectURL(blob);
+
+      this.savedVideos.push([url, videoFileName])
+    },
+
+    displayVideo(blob, id) {
+      const video = this.$refs['video'+id][0];
+      video.src = blob;
+      if(video.paused) {
+        video.play();
+      } else {
+        video.pause();
       }
     }
   }
@@ -94,4 +165,20 @@ export default {
     display: none;
   }
 }
+.recorded-videos {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: center;
+  .video {
+    margin: 2em;
+    border: 1px solid white;
+    border-radius: 1.4em;
+    width: 150px;
+    height: 150px;
+    box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+}
+
 </style>

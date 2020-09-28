@@ -1,5 +1,5 @@
 <template>
-  <footer class="block-footer">© 2020 - video journal [v.0.0.2]</footer>
+  <footer class="block-footer">© 2020 - video journal</footer>
 </template>
 
 <script>
