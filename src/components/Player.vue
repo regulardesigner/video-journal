@@ -1,8 +1,9 @@
 <template>
   <section class="view-player">
     <div class="controlers">
-      <div ref="player" class="player" :class="playerStyle">
-        <span>{{ playerText }}</span>
+      <div class="camera-view">
+        <span class="camera-view__intructions">{{ playerText }}</span>
+        <video ref="player" class="player"></video>
       </div>
       <div class="audio">audio</div>
       <div class="canvas">canvas</div>
@@ -11,7 +12,7 @@
 </template>
 
 <script>
-import Loader from "./Loader.vue";
+import constraints from "@/helpers/constraints.js";
 
 export default {
   name: "video-player",
@@ -24,7 +25,6 @@ export default {
   },
 
   mounted() {
-    console.log(this.$refs.player);
     this.videoPlayer();
   },
 
@@ -32,22 +32,12 @@ export default {
     videoPlayer() {
       const player = this.$refs.player;
 
-      const constraints = {
-        audio: true,
-        video: {
-          facingMode: "user",
-          width: { exact: 512 },
-          height: { exact: 512 }
-        }
-      };
-
-      if (!navigator.mediaRecorder) {
-        this.playerText = "☠️ Outch, you'll need a camera.";
-        this.playerStyle = "error";
-      } else {
+      if (navigator.mediaDevices) {
+        const ctx = this
         navigator.mediaDevices
           .getUserMedia(constraints)
           .then(function(mediaStream) {
+            ctx.playerText = "";
             player.srcObject = mediaStream;
             player.onloadedmetadata = () => {
               player.play();
@@ -55,13 +45,14 @@ export default {
           })
           .catch(function(err) {
             console.error(err.name + ": " + err.message);
+            ctx.playerText = "☠️ Outch, you'll need a camera.";
+            ctx.playerStyle = "error";
           });
+      } else {
+        ctx.playerText = "☠️ Outch, you'll need a camera.";
+        ctx.playerStyle = "error";
       }
     }
-  },
-
-  components: {
-    Loader
   }
 };
 </script>
@@ -72,20 +63,13 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  .player {
+  .camera-view {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 2em;
-    border: 1px solid white;
-    border-radius: 1.4em;
-    width: 300px;
-    height: 300px;
-    box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
 
-    &.error {
-      background-image: url("../assets/error.gif");
-      box-shadow: inset 0 0 60px 20px black;
+    &__intructions {
+      position: absolute;
     }
 
     &.error span {
@@ -96,6 +80,14 @@ export default {
       font-weight: bold;
       color: rgba(0, 0, 0, 0.4);
     }
+  }
+  .player {
+    margin: 2em;
+    border: 1px solid white;
+    border-radius: 1.4em;
+    width: 300px;
+    height: 300px;
+    box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
   }
   .audio,
   .canvas {
