@@ -7,7 +7,11 @@
     "build": "vue-cli-service build",
     "deploy": "./deploy.sh",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
   },
   "dependencies": {
     "core-js": "^3.6.5",
