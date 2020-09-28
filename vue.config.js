@@ -1,3 +1,5 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === "production" ? "/video-journal/" : "/"
+  publicPath: process.env.NODE_ENV === "production" ? "/video-journal/" : "/",
+
+  lintOnSave: true
 };
