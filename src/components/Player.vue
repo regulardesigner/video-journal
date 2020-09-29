@@ -14,7 +14,7 @@
       <div v-for="(savedVideo, index) in savedVideos" :key="savedVideo[1]" class="video">
         <a class="play-button" @click.prevent="displayVideo(savedVideo[0], index)" :href="savedVideo[0]">
           <span class="play-button__label">play</span>
-          <video :ref="'video'+index" width='300' height="300">
+          <video :ref="'video'+index">
             <source :src="savedVideo[0]" type="video/webm">
           </video>
         </a>
@@ -130,6 +130,10 @@ export default {
 </script>
 
 <style lang="scss">
+video {
+  width: 100%    !important;
+  height: auto   !important;
+}
 .controlers {
   display: flex;
   flex-direction: column;
@@ -154,11 +158,9 @@ export default {
     }
   }
   .player {
-    margin: 2em;
+    margin: 2.4em;
     border: 1px solid white;
     border-radius: 1.4em;
-    width: 300px;
-    height: 300px;
     box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
   }
   .audio,
@@ -175,8 +177,6 @@ export default {
     margin: 2em;
     border: 2px solid #f40;
     border-radius: 1.4em;
-    width: 300px;
-    height: 300px;
     box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
     overflow: hidden;
 
