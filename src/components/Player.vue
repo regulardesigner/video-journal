@@ -12,8 +12,9 @@
     </div>
     <section class="recorded-videos">
       <div v-for="(savedVideo, index) in savedVideos" :key="savedVideo[1]" class="video">
-        <a @click.prevent="displayVideo(savedVideo[0], index)" :href="savedVideo[0]">
-          <video :ref="'video'+index" width='150' height="150">
+        <a class="play-button" @click.prevent="displayVideo(savedVideo[0], index)" :href="savedVideo[0]">
+          <span class="play-button__label">play</span>
+          <video :ref="'video'+index" width='300' height="300">
             <source :src="savedVideo[0]" type="video/webm">
           </video>
         </a>
@@ -172,12 +173,33 @@ export default {
   align-items: center;
   .video {
     margin: 2em;
-    border: 1px solid white;
+    border: 2px solid #f40;
     border-radius: 1.4em;
-    width: 150px;
-    height: 150px;
+    width: 300px;
+    height: 300px;
     box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
     overflow: hidden;
+
+    &:hover .play-button__label {
+      opacity: .8;
+    }
+
+    .play-button {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      &__label {
+        color: white;
+        font-weight: bold;
+        font-size: 4em;
+        display: block;
+        position: absolute;
+        opacity: 0;
+        transition: all .4s ease;
+      }
+    }
   }
 }
 
