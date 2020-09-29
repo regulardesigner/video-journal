@@ -3,7 +3,7 @@
     <div class="controlers">
       <div class="camera-view">
         <span class="camera-view__intructions">{{ playerText }}</span>
-        <video ref="player" class="player"></video>
+        <video ref="player" class="player" muted="muted"></video>
       </div>
       <button @click="startRecord" class="start">Start Rec</button>
       <button @click="stopRecord" class="stop">Stop Rec</button>
