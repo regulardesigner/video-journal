@@ -11,14 +11,5 @@ module.exports = {
     ".*\\.(vue)$": "vue-jest"
   },
   collectCoverage: true,
-  collectCoverageFrom: [
-    "src/**/*.vue",
-    "!**/node_modules/**",
-    "!**/dist/**",
-    "!**/_first_version/**",
-    "!**/coverage/**",
-    "!babel.config.js",
-    "!jest.config.js",
-    "!vue.config.js"
-  ]
+  collectCoverageFrom: ["<rootDir>/src/*.vue", "<rootDir>/src/components/*.vue"]
 };
