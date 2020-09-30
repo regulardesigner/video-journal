@@ -10,30 +10,27 @@
       <div class="audio">audio</div>
       <div class="canvas">canvas</div>
     </div>
-    <section class="recorded-videos">
-      <div v-for="(savedVideo, index) in savedVideos" :key="savedVideo[1]" class="video">
-        <a class="play-button" @click.prevent="displayVideo(savedVideo[0], index)" :href="savedVideo[0]">
-          <span class="play-button__label">play</span>
-          <video :ref="'video'+index">
-            <source :src="savedVideo[0]" type="video/webm">
-          </video>
-        </a>
-      </div>
-    </section>
+    <!-- RecodedVideosList -->
+    <recorded-videos-list :videos="savedVideos" />
   </section>
 </template>
 
 <script>
 import constraints from "@/helpers/constraints.js";
+import RecordedVideosList from "@/components/RecordedVideosList";
 
 export default {
   name: "video-player",
+
+  components: {
+    RecordedVideosList
+  },
 
   data() {
     return {
       playerStyle: "",
       playerText: "Please autorize the camera.",
-      mediaRecorder: '',
+      mediaRecorder: "",
       recordedChunks: [],
       savedVideos: []
     };
@@ -74,14 +71,14 @@ export default {
     },
 
     startRecord() {
-      if (this.mediaRecorder.state === 'inactive') {
+      if (this.mediaRecorder.state === "inactive") {
         this.mediaRecorder.ondataavailable = this.saveVideoChunks;
         this.mediaRecorder.start();
       }
     },
 
     stopRecord() {
-      if (this.mediaRecorder.state === 'recording') {
+      if (this.mediaRecorder.state === "recording") {
         this.mediaRecorder.stop();
         this.recordedChunks = [];
       }
@@ -113,17 +110,7 @@ export default {
 
       const url = URL.createObjectURL(blob);
 
-      this.savedVideos.push([url, videoFileName])
-    },
-
-    displayVideo(blob, id) {
-      const video = this.$refs['video'+id][0];
-      video.src = blob;
-      if(video.paused) {
-        video.play();
-      } else {
-        video.pause();
-      }
+      this.savedVideos.push([url, videoFileName]);
     }
   }
 };
@@ -131,8 +118,8 @@ export default {
 
 <style lang="scss">
 video {
-  width: 100%    !important;
-  height: auto   !important;
+  width: 100% !important;
+  height: auto !important;
 }
 .controlers {
   display: flex;
@@ -168,39 +155,4 @@ video {
     display: none;
   }
 }
-.recorded-videos {
-  display: flex;
-  flex-direction: column-reverse;
-  justify-content: center;
-  align-items: center;
-  .video {
-    margin: 2em;
-    border: 2px solid #f40;
-    border-radius: 1.4em;
-    box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-
-    &:hover .play-button__label {
-      opacity: .8;
-    }
-
-    .play-button {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      &__label {
-        color: white;
-        font-weight: bold;
-        font-size: 4em;
-        display: block;
-        position: absolute;
-        opacity: 0;
-        transition: all .4s ease;
-      }
-    }
-  }
-}
-
 </style>
