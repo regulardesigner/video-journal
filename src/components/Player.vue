@@ -5,8 +5,7 @@
         <span class="camera-view__intructions">{{ playerText }}</span>
         <video ref="player" class="player" muted="muted"></video>
       </div>
-      <button @click="startRecord" class="start">Start Rec</button>
-      <button @click="stopRecord" class="stop">Stop Rec</button>
+      <button @click="handleVideoRecording" class="button button--record">Record</button>
       <div class="audio">audio</div>
       <div class="canvas">canvas</div>
     </div>
@@ -111,6 +110,20 @@ export default {
       const url = URL.createObjectURL(blob);
 
       this.savedVideos.push([url, videoFileName]);
+    },
+
+    handleVideoRecording() {
+      // by pressing on button we're 
+      // handeling start and stop video recording.
+      const recording = this.mediaRecorder.state
+      debugger
+      if (recording === "recording") {
+        debugger
+        this.stopRecord()
+      } else {
+        debugger
+        this.startRecord()
+      }
     }
   }
 };
