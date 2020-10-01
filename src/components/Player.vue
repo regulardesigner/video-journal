@@ -17,9 +17,12 @@
 <script>
 import constraints from "@/helpers/constraints.js";
 import RecordedVideosList from "@/components/RecordedVideosList";
+import { indexedDB } from '@/mixins/indexedDB'
 
 export default {
   name: "video-player",
+
+  mixins: [indexedDB],
 
   components: {
     RecordedVideosList
@@ -31,12 +34,18 @@ export default {
       playerText: "Please autorize the camera.",
       mediaRecorder: "",
       recordedChunks: [],
-      savedVideos: []
+      savedVideos: '',
+      db: ''
     };
   },
 
+  async created() {
+    this.db = await this.getIndexedDB()
+    this.savedVideos = await this.getVideosFromDb()
+  },
+
   mounted() {
-    this.videoPlayerInit();
+    this.videoPlayerInit()
   },
 
   methods: {
@@ -86,13 +95,13 @@ export default {
     saveVideoChunks(event) {
       if (event.data.size > 0) {
         this.recordedChunks.push(event.data);
-        this.downloadVideo();
+        this.saveVideo();
       } else {
         // ...
       }
     },
 
-    downloadVideo() {
+    saveVideo() {
       var date = new Date();
       const day = date.getDate();
       const month = date.getMonth() + 1;
@@ -107,21 +116,19 @@ export default {
 
       const videoFileName = `video_journal_${month}_${day}_${year}_${hours}h_${minutes}m_${seconds}s_.mp4`;
 
-      const url = URL.createObjectURL(blob);
+      // const url = URL.createObjectURL(blob);
 
-      this.savedVideos.push([url, videoFileName]);
+      // this.savedVideos.push([url, videoFileName]);
+      this.addVideo(videoFileName, blob)
     },
 
     handleVideoRecording() {
       // by pressing on button we're 
       // handeling start and stop video recording.
       const recording = this.mediaRecorder.state
-      debugger
       if (recording === "recording") {
-        debugger
         this.stopRecord()
       } else {
-        debugger
         this.startRecord()
       }
     }
