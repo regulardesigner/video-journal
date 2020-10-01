@@ -10,7 +10,7 @@
       <div class="canvas">canvas</div>
     </div>
     <!-- RecodedVideosList -->
-    <recorded-videos-list :videos="savedVideos" />
+    <recorded-videos-list v-on:remove-video-id="deleteVideo" :videos="savedVideos" />
   </section>
 </template>
 

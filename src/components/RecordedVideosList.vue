@@ -10,11 +10,13 @@
           <source :src="convertBlobToUrl(video.blob)" type="video/webm" />
         </video>
       </a>
+      <button @click="handleEmit(video.id)">🙀 Delete</button>
     </div>
   </section>
 </template>
 
 <script>
+
 export default {
   name: "recorded-videos-list",
 
@@ -36,6 +38,10 @@ export default {
     convertBlobToUrl(blob) {
       const url = URL.createObjectURL(blob)
       return url
+    },
+
+    handleEmit(id) {
+      this.$emit('remove-video-id', id)
     }
   }
 };

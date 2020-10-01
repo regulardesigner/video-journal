@@ -83,7 +83,24 @@ export const indexedDB = {
         let store = trans.objectStore('videos');
         
         store.add(video);
-        debugger
+      });
+    },
+
+    async deleteVideo(id) {
+      console.log('console')
+      await this.deleteVideoFromDb(id);
+      this.savedVideos = await this.getVideosFromDb();      
+    },
+
+    async deleteVideoFromDb(id) {
+      return new Promise((resolve, reject) => {
+      let trans = this.db.transaction(['videos'],'readwrite');
+      trans.oncomplete = e => {
+        resolve();
+      };
+    
+      let store = trans.objectStore('videos');
+      store.delete(id);
       });
     },
   }
