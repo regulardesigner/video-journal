@@ -1,16 +1,16 @@
 <template>
   <section class="recorded-videos">
-    <div v-for="(video, index) in videos" :key="video[1]" class="video">
+    <div v-for="video in videos" :key="video.id" class="video">
       <a
         class="play-button"
-        @click.prevent="displayVideo(video[0], index)"
-        :href="video[0]"
+        @click.prevent="displayVideo(video.blob, video.id)"
       >
         <span class="play-button__label">play</span>
-        <video :ref="'video' + index">
-          <source :src="video[0]" type="video/webm" />
+        <video :class="'video' + video.id" :ref="'video' + video.id">
+          <source :src="convertBlobToUrl(video.blob)" type="video/webm" />
         </video>
       </a>
+      <button @click="handleEmit(video.id)">🙀 Delete</button>
     </div>
   </section>
 </template>
@@ -26,12 +26,21 @@ export default {
   methods: {
     displayVideo(blob, id) {
       const video = this.$refs["video" + id][0];
-      video.src = blob;
+      video.src = this.convertBlobToUrl(blob);
       if (video.paused) {
         video.play();
       } else {
         video.pause();
       }
+    },
+
+    convertBlobToUrl(blob) {
+      const url = URL.createObjectURL(blob);
+      return url;
+    },
+
+    handleEmit(id) {
+      this.$emit("remove-video-id", id);
     }
   }
 };
@@ -44,6 +53,7 @@ export default {
   justify-content: center;
   align-items: center;
   .video {
+    max-width: 512px;
     margin: 2em;
     border: 2px solid #f40;
     border-radius: 1.4em;

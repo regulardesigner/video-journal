@@ -5,21 +5,29 @@
         <span class="camera-view__intructions">{{ playerText }}</span>
         <video ref="player" class="player" muted="muted"></video>
       </div>
-      <button @click="handleVideoRecording" class="button button--record">Record</button>
+      <button @click="handleVideoRecording" class="button" :class="button">
+        Rec
+      </button>
       <div class="audio">audio</div>
       <div class="canvas">canvas</div>
     </div>
     <!-- RecodedVideosList -->
-    <recorded-videos-list :videos="savedVideos" />
+    <recorded-videos-list
+      v-on:remove-video-id="deleteVideo"
+      :videos="savedVideos"
+    />
   </section>
 </template>
 
 <script>
 import constraints from "@/helpers/constraints.js";
 import RecordedVideosList from "@/components/RecordedVideosList";
+import { indexedDB } from "@/mixins/indexedDB";
 
 export default {
   name: "video-player",
+
+  mixins: [indexedDB],
 
   components: {
     RecordedVideosList
@@ -28,11 +36,18 @@ export default {
   data() {
     return {
       playerStyle: "",
+      button: 'button--record',
       playerText: "Please autorize the camera.",
       mediaRecorder: "",
       recordedChunks: [],
-      savedVideos: []
+      savedVideos: "",
+      db: ""
     };
+  },
+
+  async created() {
+    this.db = await this.getIndexedDB();
+    this.savedVideos = await this.getVideosFromDb();
   },
 
   mounted() {
@@ -72,6 +87,7 @@ export default {
     startRecord() {
       if (this.mediaRecorder.state === "inactive") {
         this.mediaRecorder.ondataavailable = this.saveVideoChunks;
+        this.button = 'button--record recording'
         this.mediaRecorder.start();
       }
     },
@@ -79,6 +95,7 @@ export default {
     stopRecord() {
       if (this.mediaRecorder.state === "recording") {
         this.mediaRecorder.stop();
+        this.button = 'button--record'
         this.recordedChunks = [];
       }
     },
@@ -86,13 +103,13 @@ export default {
     saveVideoChunks(event) {
       if (event.data.size > 0) {
         this.recordedChunks.push(event.data);
-        this.downloadVideo();
+        this.saveVideo();
       } else {
         // ...
       }
     },
 
-    downloadVideo() {
+    saveVideo() {
       var date = new Date();
       const day = date.getDate();
       const month = date.getMonth() + 1;
@@ -107,22 +124,18 @@ export default {
 
       const videoFileName = `video_journal_${month}_${day}_${year}_${hours}h_${minutes}m_${seconds}s_.mp4`;
 
-      const url = URL.createObjectURL(blob);
-
-      this.savedVideos.push([url, videoFileName]);
+      this.addVideo(videoFileName, blob);
     },
 
     handleVideoRecording() {
-      // by pressing on button we're 
+      // by pressing on button we're
       // handeling start and stop video recording.
-      const recording = this.mediaRecorder.state
-      debugger
+      const recording = this.mediaRecorder.state;
       if (recording === "recording") {
-        debugger
-        this.stopRecord()
+        this.stopRecord();
       } else {
-        debugger
-        this.startRecord()
+        this.startRecord();
+
       }
     }
   }
@@ -136,10 +149,13 @@ video {
 }
 .controlers {
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   .camera-view {
+    margin: 2em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -158,11 +174,51 @@ video {
     }
   }
   .player {
-    margin: 2.4em;
     border: 1px solid white;
     border-radius: 1.4em;
     box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
   }
+
+  .button--record {
+    position: absolute;
+    bottom: 3em;
+
+    cursor: pointer;
+    display: block;
+    background-color:grey;
+    text-transform: uppercase;
+    color: white;
+    border: 2px solid white;
+    border-radius: 4em;
+    width: 4em;
+    height: 4em;
+    outline: none;
+    transition: all ease-in 150ms;
+  }
+
+  .button--record:hover {
+    border-width: 4px;
+    background-color: red;
+  }
+
+  .button--record.recording {
+    animation: recording_motion 1s infinite alternate;
+  }
+
+  @keyframes recording_motion {
+    from {
+      background-color: red;
+      border-width: 16px;
+      color:transparent;
+    }
+    to {
+      background-color: white;
+      border-color: red;
+      border-width: 16px;
+      color: transparent;
+    }
+  }
+
   .audio,
   .canvas {
     display: none;
