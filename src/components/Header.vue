@@ -18,23 +18,25 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #4DBA87;
+  justify-content: center;
+  height: 4.4em;
+  box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
 }
 .brand {
-  background-color: white;
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 0.4em 1em 0.2em 0.6em;
   border-radius: 0.6em;
-  box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
 
   &-icon {
-    font-size: 1.8em;
+    font-size: 2.2em;
     margin-right: 0.4em;
   }
 
   &-name {
-    font-size: 1.2em;
+    font-size: 1.6em;
     font-weight: bold;
     text-transform: uppercase;
   }

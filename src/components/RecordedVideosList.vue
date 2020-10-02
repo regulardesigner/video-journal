@@ -16,7 +16,6 @@
 </template>
 
 <script>
-
 export default {
   name: "recorded-videos-list",
 
@@ -36,12 +35,12 @@ export default {
     },
 
     convertBlobToUrl(blob) {
-      const url = URL.createObjectURL(blob)
-      return url
+      const url = URL.createObjectURL(blob);
+      return url;
     },
 
     handleEmit(id) {
-      this.$emit('remove-video-id', id)
+      this.$emit("remove-video-id", id);
     }
   }
 };
@@ -54,6 +53,7 @@ export default {
   justify-content: center;
   align-items: center;
   .video {
+    max-width: 512px;
     margin: 2em;
     border: 2px solid #f40;
     border-radius: 1.4em;

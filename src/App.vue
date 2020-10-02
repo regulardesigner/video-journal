@@ -23,6 +23,9 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+  margin: 0;
+}
 #app {
   font-size: 62.5%;
   font-family: "Courier New", Courier, monospace;
