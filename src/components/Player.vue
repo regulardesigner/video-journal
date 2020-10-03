@@ -8,6 +8,7 @@
       <button @click="handleVideoRecording" class="button" :class="button">
         Rec
       </button>
+      <button @click="handleRecordingPause">Pause</button>
       <div class="audio">audio</div>
       <div class="canvas">canvas</div>
     </div>
@@ -100,6 +101,18 @@ export default {
       }
     },
 
+    pauseRecord() {
+      if (this.mediaRecorder.state === "recording") {
+        this.mediaRecorder.pause();
+      }
+    },
+
+    resumeRecord() {
+      if (this.mediaRecorder.state === "paused") {
+        this.mediaRecorder.resume();
+      }
+    },
+
     saveVideoChunks(event) {
       if (event.data.size > 0) {
         this.recordedChunks.push(event.data);
@@ -135,6 +148,17 @@ export default {
         this.stopRecord();
       } else {
         this.startRecord();
+
+      }
+    },
+
+    handleRecordingPause() {
+      const recording = this.mediaRecorder.state;
+      
+      if (recording === "paused") {
+        this.resumeRecord();
+      } else {
+        this.pauseRecord();
 
       }
     }
