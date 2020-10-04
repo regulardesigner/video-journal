@@ -1,6 +1,6 @@
 # video-journal project
 
-Video-journal is a web application for recording short videos. It's just like a personal diary but in video. 
+Video-journal is a progressive web application for recording short videos. It's just like a personal diary but in video. 
 
 ## How does Video Journal work?
 
