@@ -45,7 +45,7 @@ export default {
       playerText: "Please autorize the camera.",
       mediaRecorder: "",
       recordedChunks: [],
-      savedVideos: "",
+      savedVideos: [],
       db: ""
     };
   },
