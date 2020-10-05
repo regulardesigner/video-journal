@@ -1,5 +1,7 @@
 <template>
-  <footer class="block-footer">© 2020 - video journal - storage used: {{ dataUsed.toFixed(2) }}%</footer>
+  <footer class="block-footer">
+    © 2020 - video journal - storage used: {{ dataUsed.toFixed(2) }}%
+  </footer>
 </template>
 
 <script>
@@ -10,11 +12,11 @@ export default {
     return {
       dataUsed: 0,
       dataRemaning: 0
-    }
+    };
   },
 
   mounted() {
-    this.getAvailbleDataStorage()
+    this.getAvailbleDataStorage();
   },
 
   methods: {
@@ -24,10 +26,10 @@ export default {
         // quota.usage -> Number of bytes used.
         // quota.quota -> Maximum number of bytes available.
         const percentageUsed = (quota.usage / quota.quota) * 100;
-        this.dataUsed = percentageUsed
+        this.dataUsed = percentageUsed;
         // console.log(`You've used ${percentageUsed}% of the available storage.`);
         const remaining = quota.quota - quota.usage;
-        this.dataRemaning = remaining
+        this.dataRemaning = remaining;
         // console.log(`You can write up to ${remaining} more bytes.`);
       }
     }

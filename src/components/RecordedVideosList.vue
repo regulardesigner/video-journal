@@ -86,11 +86,11 @@ export default {
 
     .delete {
       position: absolute;
-      bottom: .5em;
+      bottom: 0.5em;
       text-transform: uppercase;
       border: none;
-      padding: .4em .8em .3em .6em;
-      border-radius: .4em;
+      padding: 0.4em 0.8em 0.3em 0.6em;
+      border-radius: 0.4em;
 
       &:hover {
         background: red;

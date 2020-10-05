@@ -18,7 +18,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #4DBA87;
+  background-color: #4dba87;
   justify-content: center;
   height: 4.4em;
   box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);

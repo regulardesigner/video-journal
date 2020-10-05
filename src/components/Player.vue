@@ -6,10 +6,20 @@
         <video ref="player" class="player" muted="muted"></video>
       </div>
       <div class="buttons-group">
-        <button @click="handleVideoRecording" class="button button--record" :class="rec_button">
+        <button
+          @click="handleVideoRecording"
+          class="button button--record"
+          :class="rec_button"
+        >
           Rec
         </button>
-        <button @click="handleRecordingPause" class="button button--pause" :class="pause_button">| |</button>
+        <button
+          @click="handleRecordingPause"
+          class="button button--pause"
+          :class="pause_button"
+        >
+          | |
+        </button>
       </div>
       <div class="audio">audio</div>
       <div class="canvas">canvas</div>
@@ -39,9 +49,9 @@ export default {
   data() {
     return {
       playerStyle: "",
-      rec_button: '',
-      pause_button: '',
-      showButton: 'record',
+      rec_button: "",
+      pause_button: "",
+      showButton: "record",
       playerText: "Please autorize the camera.",
       mediaRecorder: "",
       recordedChunks: [],
@@ -92,7 +102,7 @@ export default {
     startRecord() {
       if (this.mediaRecorder.state === "inactive") {
         this.mediaRecorder.ondataavailable = this.saveVideoChunks;
-        this.rec_button = 'button--record__recording'
+        this.rec_button = "button--record__recording";
         this.mediaRecorder.start();
       }
     },
@@ -100,23 +110,23 @@ export default {
     stopRecord() {
       if (this.mediaRecorder.state === "recording") {
         this.mediaRecorder.stop();
-        this.rec_button = ''
+        this.rec_button = "";
         this.recordedChunks = [];
       }
     },
 
     pauseRecord() {
       if (this.mediaRecorder.state === "recording") {
-        this.pause_button = 'button--pause__active'
-        this.rec_button = 'button--record__recording paused'
+        this.pause_button = "button--pause__active";
+        this.rec_button = "button--record__recording paused";
         this.mediaRecorder.pause();
       }
     },
 
     resumeRecord() {
       if (this.mediaRecorder.state === "paused") {
-        this.rec_button = 'button--record__recording'
-        this.pause_button = ''
+        this.rec_button = "button--record__recording";
+        this.pause_button = "";
         this.mediaRecorder.resume();
       }
     },
@@ -156,18 +166,16 @@ export default {
         this.stopRecord();
       } else {
         this.startRecord();
-
       }
     },
 
     handleRecordingPause() {
       const recording = this.mediaRecorder.state;
-      
+
       if (recording === "paused") {
         this.resumeRecord();
       } else {
         this.pauseRecord();
-
       }
     }
   }
@@ -219,10 +227,11 @@ video {
     bottom: 3em;
   }
 
-  .button--record, .button--pause {
+  .button--record,
+  .button--pause {
     cursor: pointer;
     display: block;
-    background-color:red;
+    background-color: red;
     text-transform: uppercase;
     color: white;
     border: 2px solid white;
@@ -238,16 +247,16 @@ video {
   }
 
   .button--pause {
-    opacity: .5;
+    opacity: 0.5;
     background-color: grey;
     font-weight: bolder;
-    margin: .75em;
+    margin: 0.75em;
     width: 2.5em;
     height: 2.5em;
 
     &__active {
       opacity: 1;
-      background-color: #4DBA87;
+      background-color: #4dba87;
     }
   }
 
@@ -258,7 +267,7 @@ video {
 
   .button--pause:hover {
     border-width: 4px;
-    background-color: #4DBA87;
+    background-color: #4dba87;
   }
 
   .button--record__recording {
@@ -266,7 +275,7 @@ video {
   }
 
   .button--record__recording.paused {
-    opacity: .8;
+    opacity: 0.8;
     animation: recording_paused 1s infinite alternate;
   }
 
@@ -274,7 +283,7 @@ video {
     from {
       background-color: red;
       border-width: 16px;
-      color:transparent;
+      color: transparent;
     }
     to {
       background-color: white;
