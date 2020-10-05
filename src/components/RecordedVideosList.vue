@@ -5,12 +5,12 @@
         class="play-button"
         @click.prevent="displayVideo(video.blob, video.id)"
       >
-        <span class="play-button__label">play</span>
+        <span class="play-button__label">Play</span>
         <video :class="'video' + video.id" :ref="'video' + video.id">
           <source :src="convertBlobToUrl(video.blob)" type="video/webm" />
         </video>
       </a>
-      <button @click="handleEmit(video.id)">🙀 Delete</button>
+      <button class="delete" @click="handleEmit(video.id)">🙀 Supprimer</button>
     </div>
   </section>
 </template>
@@ -53,6 +53,9 @@ export default {
   justify-content: center;
   align-items: center;
   .video {
+    display: flex;
+    justify-content: center;
+    position: relative;
     max-width: 512px;
     margin: 2em;
     border: 2px solid #f40;
@@ -78,6 +81,20 @@ export default {
         position: absolute;
         opacity: 0;
         transition: all 0.4s ease;
+      }
+    }
+
+    .delete {
+      position: absolute;
+      bottom: .5em;
+      text-transform: uppercase;
+      border: none;
+      padding: .4em .8em .3em .6em;
+      border-radius: .4em;
+
+      &:hover {
+        background: red;
+        color: white;
       }
     }
   }
