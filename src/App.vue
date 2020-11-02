@@ -9,6 +9,7 @@
 <script>
 import VideoHeader from "./components/Header.vue";
 import VideoPlayer from "./components/Player.vue";
+// import VideoRecordedList from "./components/RecordedVideosList.vue";
 import VideoFooter from "./components/Footer.vue";
 
 export default {
@@ -17,6 +18,7 @@ export default {
   components: {
     VideoHeader,
     VideoPlayer,
+    // VideoRecordedList,
     VideoFooter
   }
 };
