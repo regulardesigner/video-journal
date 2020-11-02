@@ -10,14 +10,26 @@
           <source :src="convertBlobToUrl(video.blob)" type="video/webm" />
         </video>
       </a>
-      <button class="delete" @click="handleEmit(video.id)">🙀 Supprimer</button>
+      <button class="delete" @click="warnBeforeVideoRemove(video.id)">🙀 Supprimer</button>
     </div>
+    <div v-if="warnPopUp" class="warn popup">
+        <h2>Supprimer la vidéo ?</h2>
+        <button class="button delete" @click="removeSavedVideoFromId()">Supprimer</button>
+        <button class="button cancel" @click="warnBeforeVideoRemove()">annuler</button>
+      </div>
   </section>
 </template>
 
 <script>
 export default {
   name: "recorded-videos-list",
+
+  data() {
+    return {
+      warnPopUp: false,
+      deleteVideoId: null
+    }
+  },
 
   props: {
     videos: { type: Array, default: [] }
@@ -39,8 +51,20 @@ export default {
       return url;
     },
 
-    handleEmit(id) {
-      this.$emit("remove-video-id", id);
+    warnBeforeVideoRemove(id) {
+      if (this.warnPopUp) {
+        this.warnPopUp = false
+        this.deleteVideoId = null
+      } else {
+        this.warnPopUp = true
+        this.deleteVideoId = id
+      }
+    },
+
+    removeSavedVideoFromId() {
+      this.$emit("remove-video-id", this.deleteVideoId);
+      this.deleteVideoId = null
+      this.warnPopUp = false
     }
   }
 };
@@ -96,6 +120,44 @@ export default {
         background: red;
         color: white;
       }
+    }
+  }
+}
+
+.warn {
+  position: fixed;
+  top: 50%;
+  background-color: white;
+  padding: 2em;
+  border-radius: 1em;
+  border: 2px solid red;
+  box-shadow: 0 0.8em 2em 0.8em rgba(0, 0, 0, 0.1);
+
+  .button {
+    display: block;
+    width: 100%;
+    text-transform: uppercase;
+    padding: 0.4em 0.8em 0.3em 0.6em;
+    border-radius: 0.4em;
+
+    &:hover {
+      color: white;
+    }
+  }
+  
+  .delete {
+    border: 1px solid red;
+
+    &:hover {
+      background: red;
+    }
+  }
+  .cancel {
+    border: 1px solid grey;
+    margin-top: 1rem;
+
+    &:hover {
+      background: grey;
     }
   }
 }

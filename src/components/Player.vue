@@ -24,7 +24,6 @@
       <div class="audio">audio</div>
       <div class="canvas">canvas</div>
     </div>
-    <span>{{ getCount }}</span>
     <!-- RecodedVideosList -->
     <recorded-videos-list
       v-on:remove-video-id="deleteVideo"
