@@ -24,6 +24,7 @@
       <div class="audio">audio</div>
       <div class="canvas">canvas</div>
     </div>
+    <span>{{ getCount }}</span>
     <!-- RecodedVideosList -->
     <recorded-videos-list
       v-on:remove-video-id="deleteVideo"
@@ -33,6 +34,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import constraints from "@/helpers/constraints.js";
 import RecordedVideosList from "@/components/RecordedVideosList";
 import { indexedDB } from "@/mixins/indexedDB";
@@ -46,8 +48,13 @@ export default {
     RecordedVideosList
   },
 
+  computed: {
+    ...mapGetters(['getCount'])
+  },
+
   data() {
     return {
+      videoConstraints: constraints,
       playerStyle: "",
       rec_button: "",
       pause_button: "",
@@ -56,7 +63,11 @@ export default {
       mediaRecorder: "",
       recordedChunks: [],
       savedVideos: [],
-      db: ""
+      db: "",
+      deviceInfos: {
+        enumarateDevices: {},
+        supportedConstraints: {}
+      }
     };
   },
 
@@ -76,11 +87,17 @@ export default {
       const options = { mineType: "video/webm; codecs=vp9" };
       this.mediaRecorder = new MediaRecorder(stream, options);
 
+      // Get device capabilities informations
+      navigator.mediaDevices.enumerateDevices().then(res => {
+        this.deviceInfos.enumarateDevices = res;
+      });
+      this.deviceInfos.supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
+
       const ctx = this;
 
       if (navigator.mediaDevices) {
         navigator.mediaDevices
-          .getUserMedia(constraints)
+          .getUserMedia(this.videoConstraints)
           .then(function(mediaStream) {
             ctx.playerText = "";
             player.srcObject = mediaStream;
