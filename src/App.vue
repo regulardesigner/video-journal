@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <video-header />
-    <video-player />
+    <video-header v-on:handle-navigation="handleShowHideCapture" />
+    <video-player :isNavigationOpen="showCapture" />
     <video-footer />
   </div>
 </template>
@@ -20,6 +20,19 @@ export default {
     VideoPlayer,
     // VideoRecordedList,
     VideoFooter
+  },
+
+  data() {
+    return {
+      showCapture: false,
+    };
+  },
+
+  methods: {
+    handleShowHideCapture() {
+      console.log('CAPTURED EVENT')
+      this.showCapture = !this.showCapture
+    }
   }
 };
 </script>
