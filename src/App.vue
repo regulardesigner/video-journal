@@ -24,14 +24,14 @@ export default {
 
   data() {
     return {
-      showCapture: false,
+      showCapture: false
     };
   },
 
   methods: {
     handleShowHideCapture() {
-      console.log('CAPTURED EVENT')
-      this.showCapture = !this.showCapture
+      console.log("CAPTURED EVENT");
+      this.showCapture = !this.showCapture;
     }
   }
 };

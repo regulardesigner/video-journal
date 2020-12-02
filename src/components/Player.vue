@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 import constraints from "@/helpers/constraints.js";
 import RecordedVideosList from "@/components/RecordedVideosList";
 import { indexedDB } from "@/mixins/indexedDB";
@@ -42,7 +42,7 @@ export default {
   name: "video-player",
 
   props: {
-    isNavigationOpen: { type:Boolean, default: undefined }
+    isNavigationOpen: { type: Boolean, default: undefined }
   },
 
   mixins: [indexedDB],
@@ -52,15 +52,15 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['getCount']),
+    ...mapGetters(["getCount"])
   },
 
   watch: {
     isNavigationOpen() {
       if (this.isNavigationOpen) {
-        setInterval(this.videoPlayerInit(), 2000)
+        setInterval(this.videoPlayerInit(), 2000);
       } else {
-        this.videoPlayerStop()
+        this.videoPlayerStop();
       }
     }
   },
@@ -130,7 +130,7 @@ export default {
     },
 
     videoPlayerStop() {
-      const player = this.$refs.player
+      const player = this.$refs.player;
       const stream = player.srcObject;
       const tracks = stream.getTracks();
 

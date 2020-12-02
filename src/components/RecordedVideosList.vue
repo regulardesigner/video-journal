@@ -10,13 +10,19 @@
           <source :src="convertBlobToUrl(video.blob)" type="video/webm" />
         </video>
       </a>
-      <button class="delete" @click="warnBeforeVideoRemove(video.id)">🙀 Supprimer</button>
+      <button class="delete" @click="warnBeforeVideoRemove(video.id)">
+        🙀 Supprimer
+      </button>
     </div>
     <div v-if="warnPopUp" class="warn popup">
-        <h2>Supprimer la vidéo ?</h2>
-        <button class="button delete" @click="removeSavedVideoFromId()">Supprimer</button>
-        <button class="button cancel" @click="warnBeforeVideoRemove()">annuler</button>
-      </div>
+      <h2>Supprimer la vidéo ?</h2>
+      <button class="button delete" @click="removeSavedVideoFromId()">
+        Supprimer
+      </button>
+      <button class="button cancel" @click="warnBeforeVideoRemove()">
+        annuler
+      </button>
+    </div>
   </section>
 </template>
 
@@ -28,7 +34,7 @@ export default {
     return {
       warnPopUp: false,
       deleteVideoId: null
-    }
+    };
   },
 
   props: {
@@ -53,18 +59,18 @@ export default {
 
     warnBeforeVideoRemove(id) {
       if (this.warnPopUp) {
-        this.warnPopUp = false
-        this.deleteVideoId = null
+        this.warnPopUp = false;
+        this.deleteVideoId = null;
       } else {
-        this.warnPopUp = true
-        this.deleteVideoId = id
+        this.warnPopUp = true;
+        this.deleteVideoId = id;
       }
     },
 
     removeSavedVideoFromId() {
       this.$emit("remove-video-id", this.deleteVideoId);
-      this.deleteVideoId = null
-      this.warnPopUp = false
+      this.deleteVideoId = null;
+      this.warnPopUp = false;
     }
   }
 };
@@ -144,7 +150,7 @@ export default {
       color: white;
     }
   }
-  
+
   .delete {
     border: 1px solid red;
 

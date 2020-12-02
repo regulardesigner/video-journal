@@ -16,12 +16,12 @@ export default {
 
   methods: {
     handleNavigationClick() {
-      this.$emit("handle-navigation")
+      this.$emit("handle-navigation");
     }
   }
 };
 </script>
 
 <style lang="scss">
-@import '@/assets/stylesheets/header.scss';
+@import "@/assets/stylesheets/header.scss";
 </style>
