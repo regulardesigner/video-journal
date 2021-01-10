@@ -25,10 +25,7 @@
       <div class="canvas">canvas</div>
     </div>
     <!-- RecodedVideosList -->
-    <recorded-videos-list
-      v-on:remove-video-id="deleteVideo"
-      :videos="savedVideos"
-    />
+    <recorded-videos-list v-on:remove-video-id="deleteVideo" :videos="savedVideos" />
   </section>
 </template>
 
@@ -87,10 +84,6 @@ export default {
   async created() {
     this.db = await this.getIndexedDB();
     this.savedVideos = await this.getVideosFromDb();
-  },
-
-  mounted() {
-    // this.videoPlayerInit();
   },
 
   methods: {

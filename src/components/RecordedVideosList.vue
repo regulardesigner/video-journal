@@ -1,40 +1,22 @@
 <template>
   <section class="recorded-videos">
     <div v-for="video in videos" :key="video.id" class="video">
-      <a
-        class="play-button"
-        @click.prevent="displayVideo(video.blob, video.id)"
-      >
-        <span class="play-button__label">Play</span>
-        <video :class="'video' + video.id" :ref="'video' + video.id">
-          <source :src="convertBlobToUrl(video.blob)" type="video/webm" />
-        </video>
-      </a>
-      <button class="delete" @click="warnBeforeVideoRemove(video.id)">
-        🙀 Supprimer
-      </button>
-    </div>
-    <div v-if="warnPopUp" class="warn popup">
-      <h2>Supprimer la vidéo ?</h2>
-      <button class="button delete" @click="removeSavedVideoFromId()">
-        Supprimer
-      </button>
-      <button class="button cancel" @click="warnBeforeVideoRemove()">
-        annuler
-      </button>
+      <video :class="'video' + video.id" :ref="'video' + video.id" controls>
+        <source :src="convertBlobToUrl(video.blob)" type="video/webm" />
+      </video>
+      <delete-video-options v-on:remove-video-id="passVideoId" :video-id="video.id" />
     </div>
   </section>
 </template>
 
 <script>
+import DeleteVideoOptions from "@/components/DeleteVideo";
+
 export default {
   name: "recorded-videos-list",
 
-  data() {
-    return {
-      warnPopUp: false,
-      deleteVideoId: null
-    };
+  components: {
+    DeleteVideoOptions
   },
 
   props: {
@@ -57,20 +39,8 @@ export default {
       return url;
     },
 
-    warnBeforeVideoRemove(id) {
-      if (this.warnPopUp) {
-        this.warnPopUp = false;
-        this.deleteVideoId = null;
-      } else {
-        this.warnPopUp = true;
-        this.deleteVideoId = id;
-      }
-    },
-
-    removeSavedVideoFromId() {
-      this.$emit("remove-video-id", this.deleteVideoId);
-      this.deleteVideoId = null;
-      this.warnPopUp = false;
+    passVideoId(id) {
+      this.$emit("remove-video-id", id)
     }
   }
 };
@@ -116,54 +86,17 @@ export default {
 
     .delete {
       position: absolute;
-      bottom: 0.5em;
+      top: 0.5em;
+      right: 0.5em;
       text-transform: uppercase;
-      border: none;
-      padding: 0.4em 0.8em 0.3em 0.6em;
+      border: 2px solid white;
+      padding: 0.3em 0.5em;
       border-radius: 0.4em;
 
       &:hover {
-        background: red;
+        border: 2px solid red;
         color: white;
       }
-    }
-  }
-}
-
-.warn {
-  position: fixed;
-  top: 50%;
-  background-color: white;
-  padding: 2em;
-  border-radius: 1em;
-  border: 2px solid red;
-  box-shadow: 0 0.8em 2em 0.8em rgba(0, 0, 0, 0.1);
-
-  .button {
-    display: block;
-    width: 100%;
-    text-transform: uppercase;
-    padding: 0.4em 0.8em 0.3em 0.6em;
-    border-radius: 0.4em;
-
-    &:hover {
-      color: white;
-    }
-  }
-
-  .delete {
-    border: 1px solid red;
-
-    &:hover {
-      background: red;
-    }
-  }
-  .cancel {
-    border: 1px solid grey;
-    margin-top: 1rem;
-
-    &:hover {
-      background: grey;
     }
   }
 }

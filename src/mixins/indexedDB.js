@@ -25,7 +25,9 @@ export const indexedDB = {
 
         request.onupgradeneeded = e => {
           console.log("On Upgrade Needed");
+          
           let db = e.target.result;
+
           let objectStore = db.createObjectStore("videos", {
             autoIncrement: true,
             keyPath: "id"
@@ -61,6 +63,7 @@ export const indexedDB = {
       // random 'video' data for now
       let video = {
         name: video_name,
+        date: new Date(),
         blob: blobFile
       };
 
@@ -87,19 +90,22 @@ export const indexedDB = {
     },
 
     async deleteVideo(id) {
-      console.log("console");
+      console.log("get deleting video:", id);
       await this.deleteVideoFromDb(id);
       this.savedVideos = await this.getVideosFromDb();
     },
 
     async deleteVideoFromDb(id) {
+      console.log("ask deleting video:", id);
       return new Promise((resolve, reject) => {
         let trans = this.db.transaction(["videos"], "readwrite");
+        
         trans.oncomplete = e => {
           resolve();
         };
 
         let store = trans.objectStore("videos");
+        
         store.delete(id);
       });
     }
