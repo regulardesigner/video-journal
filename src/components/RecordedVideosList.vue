@@ -1,9 +1,7 @@
 <template>
   <section class="recorded-videos">
-    <div v-for="video in videos" :key="video.id" class="video">
-      <video :class="'video' + video.id" :ref="'video' + video.id" controls>
-        <source :src="convertBlobToUrl(video.blob)" type="video/webm" />
-      </video>
+    <div v-for="video in videos" :key="video.id" class="player">
+      <video-reader :video-id="video.id" :source="video.blob" />
       <delete-video-options v-on:remove-video-id="passVideoId" :video-id="video.id" />
     </div>
   </section>
@@ -11,34 +9,21 @@
 
 <script>
 import DeleteVideoOptions from "@/components/DeleteVideo";
+import VideoReader from '@/components/VideoReader';
 
 export default {
   name: "recorded-videos-list",
 
   components: {
-    DeleteVideoOptions
+    DeleteVideoOptions,
+    VideoReader
   },
 
   props: {
-    videos: { type: Array, default: [] }
+   videos: { type: Array, default: [] }
   },
 
   methods: {
-    displayVideo(blob, id) {
-      const video = this.$refs["video" + id][0];
-      video.src = this.convertBlobToUrl(blob);
-      if (video.paused) {
-        video.play();
-      } else {
-        video.pause();
-      }
-    },
-
-    convertBlobToUrl(blob) {
-      const url = URL.createObjectURL(blob);
-      return url;
-    },
-
     passVideoId(id) {
       this.$emit("remove-video-id", id)
     }
@@ -52,7 +37,8 @@ export default {
   flex-direction: column-reverse;
   justify-content: center;
   align-items: center;
-  .video {
+  
+  .player {
     display: flex;
     justify-content: center;
     position: relative;
