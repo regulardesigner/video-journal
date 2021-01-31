@@ -1,5 +1,5 @@
 <template>
-  <video :class="`video${id}`" :ref="`video${id}`" controls>
+  <video :class="`video${videoId}`" :ref="`video${videoId}`" controls>
     <source :src="convertBlobToUrl(source)" type="video/webm" />
   </video>
 </template>

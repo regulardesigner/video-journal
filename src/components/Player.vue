@@ -1,31 +1,32 @@
 <template>
   <section class="view-player">
-    <div v-show="isNavigationOpen" class="controlers">
-      <div class="camera-view">
-        <span class="camera-view__intructions">{{ playerText }}</span>
-        <video ref="player" class="player" muted="muted"></video>
+    <div v-show="isNavigationOpen" class="camera__wrapper">
+      <div class="controlers">
+        <div class="camera-view">
+          <canvas ref="canvas" class="player"></canvas>
+          <video ref="player" class="canvas" muted="muted"></video>
+          <audio ref="audio" class="audio"></audio>
+        </div>
+        <div class="buttons-group">
+          <button
+            @click="handleVideoRecording"
+            class="button button--record"
+            :class="rec_button"
+          >
+            Rec
+          </button>
+          <button
+            @click="handleRecordingPause"
+            class="button button--pause"
+            :class="pause_button"
+          >
+            | |
+          </button>
+        </div>
       </div>
-      <div class="buttons-group">
-        <button
-          @click="handleVideoRecording"
-          class="button button--record"
-          :class="rec_button"
-        >
-          Rec
-        </button>
-        <button
-          @click="handleRecordingPause"
-          class="button button--pause"
-          :class="pause_button"
-        >
-          | |
-        </button>
-      </div>
-      <div class="audio">audio</div>
-      <div class="canvas">canvas</div>
     </div>
     <!-- RecodedVideosList -->
-    <recorded-videos-list v-on:remove-video-id="deleteVideo" :videos="savedVideos" />
+    <recorded-videos-list v-show="!isNavigationOpen" v-on:remove-video-id="deleteVideo" :videos="savedVideos" />
   </section>
 </template>
 
@@ -69,7 +70,6 @@ export default {
       rec_button: "",
       pause_button: "",
       showButton: "record",
-      playerText: "Please autorize the camera.",
       mediaRecorder: "",
       recordedChunks: [],
       savedVideos: [],
@@ -87,9 +87,15 @@ export default {
   },
 
   methods: {
-    videoPlayerInit() {
-      const player = this.$refs.player;
-      const stream = player.captureStream(25);
+    videoPlayerInit() {   
+      const player = this.$refs.player
+      const canvas = this.$refs.canvas
+      const audio = this.$refs.audio
+      const ctx = canvas.getContext('2d'); 
+      //
+      const stream = canvas.captureStream(25);
+      // stream.addTrack(player.srcObject.getAudioTracks()[0]);
+      //
       const options = { mineType: "video/webm; codecs=vp9" };
       this.mediaRecorder = new MediaRecorder(stream, options);
 
@@ -99,27 +105,75 @@ export default {
       });
       this.deviceInfos.supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
 
-      const ctx = this;
+      const context = this
 
       if (navigator.mediaDevices) {
         navigator.mediaDevices
           .getUserMedia(this.videoConstraints)
           .then(function(mediaStream) {
-            ctx.playerText = "";
-            player.srcObject = mediaStream;
+            player.srcObject = mediaStream
+            audio.srcObject = mediaStream
+
             player.onloadedmetadata = () => {
               player.play();
+              context.streamOnCanvas()
             };
           })
           .catch(function(err) {
             console.error(err.name + ": " + err.message);
-            ctx.playerText = "☠️ Outch, you'll need a camera.";
-            ctx.playerStyle = "error";
+            // ctx.playerText = "☠️ Outch, you'll need a camera.";
+            // ctx.playerStyle = "error";
           });
       } else {
-        ctx.playerText = "☠️ Outch, you'll need a camera.";
-        ctx.playerStyle = "error";
+        // ctx.playerText = "☠️ Outch, you'll need a camera.";
+        // ctx.playerStyle = "error";
       }
+    },
+
+    streamOnCanvas() {
+      console.log('stream on canvas')
+
+      const player = this.$refs.player
+      const canvas = this.$refs.canvas
+      const audio = this.$refs.audio
+      const ctx = canvas.getContext('2d');
+
+      const width = player.videoWidth
+      const height = player.videoHeight
+      canvas.width = width
+      canvas.height = height
+
+      return setInterval(() => {
+        ctx.drawImage(this.$refs.player, 0, 0, width, height);
+        // take the pixels out
+        let pixels = ctx.getImageData(0, 0, width, height);
+        // put them back
+        ctx.putImageData(pixels, 0, 0);
+        // add text on canvas
+        this. addTextToCanvas('Video Journal');
+      }, 40);
+    },
+
+    addTextToCanvas(title) {
+      const canvas = this.$refs.canvas
+      const ctx = canvas.getContext('2d')
+
+      const today = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date)
+      
+      ctx.fillStyle = '#4dba87';
+      ctx.fillRect(0,0, 520, 40)
+      ctx.shadowOffsetX = 0
+      ctx.shadowOffsetY = 0
+      ctx.shadowBlur = 3
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'
+      ctx.textAlign = 'left'
+      ctx.font = 'Bold 14px Monospace'
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)'
+      ctx.fillText(title, 16, 25)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
+      ctx.font = 'Bold 14px Monospace'
+      ctx.textAlign = 'right'
+      ctx.fillText(today, 500, 25)
     },
 
     videoPlayerStop() {
@@ -138,6 +192,7 @@ export default {
       if (this.mediaRecorder.state === "inactive") {
         this.mediaRecorder.ondataavailable = this.saveVideoChunks;
         this.rec_button = "button--record__recording";
+        this.mediaRecorder.stream.addTrack(this.$refs.audio.srcObject.getAudioTracks()[0]);
         this.mediaRecorder.start();
       }
     },
@@ -222,12 +277,40 @@ video {
   width: 100% !important;
   height: auto !important;
 }
+
+.view-player {
+  padding-top: 5em;
+}
+
+@mixin full-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: rgb(226, 226, 226);
+  width: 100vw;
+  height: 100vh;
+}
+
+@mixin flex-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.camera__wrapper {
+  @include full-page;
+  @include flex-center;
+}
+
 .controlers {
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
 
   .camera-view {
     margin: 2em;
@@ -249,9 +332,8 @@ video {
     }
   }
   .player {
-    border: 1px solid white;
     border-radius: 1.4em;
-    box-shadow: 0 0.4em 1em 0.4em rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2em 10em 4em rgba(255, 255, 255, 0.1);
   }
 
   .buttons-group {
