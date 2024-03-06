@@ -25,9 +25,10 @@ export const indexedDB = {
 
         request.onupgradeneeded = e => {
           console.log("On Upgrade Needed");
-          
+
           let db = e.target.result;
 
+          // eslint-disable-next-line no-unused-vars
           let objectStore = db.createObjectStore("videos", {
             autoIncrement: true,
             keyPath: "id"
@@ -37,10 +38,10 @@ export const indexedDB = {
     },
 
     async getVideosFromDb() {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         let trans = this.db.transaction(["videos"], "readonly");
 
-        trans.oncomplete = e => {
+        trans.oncomplete = () => {
           resolve(videos);
         };
 
@@ -76,10 +77,10 @@ export const indexedDB = {
     },
 
     async addVideoToDb(video) {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         let trans = this.db.transaction(["videos"], "readwrite");
 
-        trans.oncomplete = e => {
+        trans.oncomplete = () => {
           resolve();
         };
 
@@ -97,15 +98,15 @@ export const indexedDB = {
 
     async deleteVideoFromDb(id) {
       console.log("ask deleting video:", id);
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         let trans = this.db.transaction(["videos"], "readwrite");
-        
-        trans.oncomplete = e => {
+
+        trans.oncomplete = () => {
           resolve();
         };
 
         let store = trans.objectStore("videos");
-        
+
         store.delete(id);
       });
     }

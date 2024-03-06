@@ -370,12 +370,11 @@ video {
 .buttons-group {
   display: flex;
   width: 100%;
-  background-color: #4dba87;
+  background-color: transparent;
   flex-direction: row;
   justify-content: center;
   position: absolute;
-  bottom: 0;
-  border-bottom: #4dba87 0.5em solid;
+  bottom: 1rem;
 }
 
 .button--record,
@@ -385,24 +384,23 @@ video {
   background-color: red;
   text-transform: uppercase;
   color: white;
-  border: 2px solid white;
+  border: 4px solid white;
   border-radius: 4em;
-  width: 4em;
-  height: 4em;
+  width: 4.8em;
+  height: 4.8em;
   outline: none;
   transition: all ease-in 150ms;
 }
 
 .button--record {
   margin-left: 4em;
-  box-shadow: #4dba87 0px 0px 0px 10px;
 }
 
 .button--pause {
   opacity: 0.5;
   background-color: grey;
   font-weight: bolder;
-  margin: 0.75em;
+  margin: 1.15em 0 0 0.75em;
   width: 2.5em;
   height: 2.5em;
 }
@@ -410,6 +408,16 @@ video {
 .button--pause__active {
   opacity: 1;
   background-color: #4dba87;
+}
+
+.button--pause__active::before {
+  content: "pause";
+  font-size: 1.5em;
+  font-weight: bolder;
+  color: white;
+  position: absolute;
+  top: -2rem;
+  left: 44.5%;
 }
 
 .button--record:hover {
