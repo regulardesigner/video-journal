@@ -1,6 +1,7 @@
 <template>
   <footer class="block-footer">
-    © 2020 - video journal - storage used: {{ dataUsed.toFixed(2) }}%
+    © {{ new Date().getFullYear() }} - video journal - storage used:
+    {{ dataUsed.toFixed(2) }}%
   </footer>
 </template>
 
@@ -37,7 +38,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style>
 .block-footer {
   font-size: 1.2em;
   padding: 0.5rem;

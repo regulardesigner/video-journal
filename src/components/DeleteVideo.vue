@@ -1,7 +1,7 @@
 <template>
   <div class="delete__control">
     <button class="delete" @click="warnBeforeVideoRemove(videoId)">🗑️</button>
-    
+
     <div v-if="warnPopUp" class="warn popup">
       <button class="button button--delete" @click="removeSavedVideoFromId()">
         Supprimer
@@ -21,7 +21,7 @@ export default {
 
   data() {
     return {
-      warnPopUp: false,
+      warnPopUp: false
     };
   },
 
@@ -33,7 +33,7 @@ export default {
 
   methods: {
     warnBeforeVideoRemove(id) {
-      console.log('VIDEO ID:', id)
+      console.log("VIDEO ID:", id);
       if (this.warnPopUp) {
         this.warnPopUp = false;
       } else {
@@ -42,7 +42,7 @@ export default {
     },
 
     removeSavedVideoFromId() {
-      console.log('DELETE VIDEO ID:', this.videoId)
+      console.log("DELETE VIDEO ID:", this.videoId);
       this.$emit("remove-video-id", this.videoId);
       // this.deleteVideo(this.videoId)
       this.warnPopUp = false;
@@ -51,7 +51,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style>
 .warn {
   position: absolute;
   top: 0.5rem;
@@ -60,34 +60,34 @@ export default {
   padding: 1em;
   border-radius: 0.4rem;
   min-width: 10rem;
+}
 
-  .button {
-    display: block;
-    width: 100%;
-    text-transform: uppercase;
-    padding: 0.4em 0.8em 0.3em 0.6em;
-    border-radius: 1em;
+.warn .button {
+  display: block;
+  width: 100%;
+  text-transform: uppercase;
+  padding: 0.4em 0.8em 0.3em 0.6em;
+  border-radius: 1em;
+}
 
-    &:hover {
-      color: white;
-    }
+.warn .button:hover {
+  color: white;
+}
 
-    &--delete {
-      border: 1px solid red;
+.warn .button--delete {
+  border: 1px solid red;
+}
 
-      &:hover {
-        background: red;
-      }
-    }
-    
-    &--cancel {
-      border: 1px solid grey;
-      margin-top: .5rem;
+.warn .button--delete:hover {
+  background: red;
+}
 
-      &:hover {
-        background: grey;
-      }
-    }
-  }
+.warn .button--cancel {
+  border: 1px solid grey;
+  margin-top: 0.5rem;
+}
+
+.warn .button--cancel:hover {
+  background: grey;
 }
 </style>

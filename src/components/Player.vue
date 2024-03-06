@@ -7,26 +7,30 @@
           <video ref="player" class="canvas" muted="muted"></video>
           <audio ref="audio" class="audio"></audio>
         </div>
-        <div class="buttons-group">
-          <button
-            @click="handleVideoRecording"
-            class="button button--record"
-            :class="rec_button"
-          >
-            Rec
-          </button>
-          <button
-            @click="handleRecordingPause"
-            class="button button--pause"
-            :class="pause_button"
-          >
-            | |
-          </button>
-        </div>
+      </div>
+      <div class="buttons-group">
+        <button
+          @click="handleVideoRecording"
+          class="button button--record"
+          :class="rec_button"
+        >
+          Rec
+        </button>
+        <button
+          @click="handleRecordingPause"
+          class="button button--pause"
+          :class="pause_button"
+        >
+          | |
+        </button>
       </div>
     </div>
     <!-- RecodedVideosList -->
-    <recorded-videos-list v-show="!isNavigationOpen" v-on:remove-video-id="deleteVideo" :videos="savedVideos" />
+    <recorded-videos-list
+      v-show="!isNavigationOpen"
+      v-on:remove-video-id="deleteVideo"
+      :videos="savedVideos"
+    />
   </section>
 </template>
 
@@ -87,11 +91,10 @@ export default {
   },
 
   methods: {
-    videoPlayerInit() {   
-      const player = this.$refs.player
-      const canvas = this.$refs.canvas
-      const audio = this.$refs.audio
-      const ctx = canvas.getContext('2d'); 
+    videoPlayerInit() {
+      const player = this.$refs.player;
+      const canvas = this.$refs.canvas;
+      const audio = this.$refs.audio;
       //
       const stream = canvas.captureStream(25);
       // stream.addTrack(player.srcObject.getAudioTracks()[0]);
@@ -105,18 +108,18 @@ export default {
       });
       this.deviceInfos.supportedConstraints = navigator.mediaDevices.getSupportedConstraints();
 
-      const context = this
+      const context = this;
 
       if (navigator.mediaDevices) {
         navigator.mediaDevices
           .getUserMedia(this.videoConstraints)
           .then(function(mediaStream) {
-            player.srcObject = mediaStream
-            audio.srcObject = mediaStream
+            player.srcObject = mediaStream;
+            audio.srcObject = mediaStream;
 
             player.onloadedmetadata = () => {
               player.play();
-              context.streamOnCanvas()
+              context.streamOnCanvas();
             };
           })
           .catch(function(err) {
@@ -131,49 +134,62 @@ export default {
     },
 
     streamOnCanvas() {
-      console.log('stream on canvas')
+      /**
+       * Streams the video from a video player onto a canvas.
+       * It periodically draws the current frame of the video onto the canvas,
+       * and adds a text overlay on top of the video.
+       *
+       * @return {number} - The ID value of the timer that is set. This can be used in the clearInterval() method to cancel the timer.
+       */
 
-      const player = this.$refs.player
-      const canvas = this.$refs.canvas
-      const audio = this.$refs.audio
-      const ctx = canvas.getContext('2d');
+      // Get references to the video player and the canvas
+      const player = this.$refs.player;
+      const canvas = this.$refs.canvas;
+      const ctx = canvas.getContext("2d");
+      ctx.willReadFrequently = true;
 
-      const width = player.videoWidth
-      const height = player.videoHeight
-      canvas.width = width
-      canvas.height = height
+      // Set the canvas dimensions to match the video player
+      const width = player.videoWidth;
+      const height = player.videoHeight;
+      canvas.width = width;
+      canvas.height = height;
 
+      // Set an interval to periodically draw the video frame onto the canvas
       return setInterval(() => {
+        // Draw the current frame of the video onto the canvas
         ctx.drawImage(this.$refs.player, 0, 0, width, height);
-        // take the pixels out
+        // Get the image data from the canvas
         let pixels = ctx.getImageData(0, 0, width, height);
-        // put them back
+        // Put the image data back onto the canvas
         ctx.putImageData(pixels, 0, 0);
-        // add text on canvas
-        this. addTextToCanvas('Video Journal');
-      }, 40);
+        // Add a text overlay on top of the video
+        this.addTextToCanvas("Video Journal");
+      }, 40); // The interval is set to 40 milliseconds, so the video frame is updated 25 times per second (1000ms/40ms = 25fps)
     },
 
     addTextToCanvas(title) {
-      const canvas = this.$refs.canvas
-      const ctx = canvas.getContext('2d')
+      const canvas = this.$refs.canvas;
+      const ctx = canvas.getContext("2d");
 
-      const today = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date)
-      
-      ctx.fillStyle = '#4dba87';
-      ctx.fillRect(0,0, 520, 40)
-      ctx.shadowOffsetX = 0
-      ctx.shadowOffsetY = 0
-      ctx.shadowBlur = 3
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'
-      ctx.textAlign = 'left'
-      ctx.font = 'Bold 14px Monospace'
-      ctx.fillStyle = 'rgba(255, 255, 255, 1)'
-      ctx.fillText(title, 16, 25)
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
-      ctx.font = 'Bold 14px Monospace'
-      ctx.textAlign = 'right'
-      ctx.fillText(today, 500, 25)
+      const today = new Intl.DateTimeFormat("fr-FR", {
+        dateStyle: "short",
+        timeStyle: "short"
+      }).format(new Date());
+
+      ctx.fillStyle = "#4dba87";
+      ctx.fillRect(0, 0, 520, 40);
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.shadowBlur = 3;
+      ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+      ctx.textAlign = "left";
+      ctx.font = "Bold 14px Monospace";
+      ctx.fillStyle = "rgba(255, 255, 255, 1)";
+      ctx.fillText(title, 16, 25);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.font = "Bold 14px Monospace";
+      ctx.textAlign = "right";
+      ctx.fillText(today, 500, 25);
     },
 
     videoPlayerStop() {
@@ -192,7 +208,9 @@ export default {
       if (this.mediaRecorder.state === "inactive") {
         this.mediaRecorder.ondataavailable = this.saveVideoChunks;
         this.rec_button = "button--record__recording";
-        this.mediaRecorder.stream.addTrack(this.$refs.audio.srcObject.getAudioTracks()[0]);
+        this.mediaRecorder.stream.addTrack(
+          this.$refs.audio.srcObject.getAudioTracks()[0]
+        );
         this.mediaRecorder.start();
       }
     },
@@ -231,7 +249,7 @@ export default {
     },
 
     saveVideo() {
-      var date = new Date();
+      const date = new Date();
       const day = date.getDate();
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
@@ -272,9 +290,9 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style>
 video {
-  width: 100% !important;
+  max-width: 100% !important;
   height: auto !important;
 }
 
@@ -282,7 +300,7 @@ video {
   padding-top: 5em;
 }
 
-@mixin full-page {
+.full-page {
   position: absolute;
   top: 0;
   left: 0;
@@ -292,7 +310,7 @@ video {
   height: 100vh;
 }
 
-@mixin flex-center {
+.flex-center {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -300,8 +318,17 @@ video {
 }
 
 .camera__wrapper {
-  @include full-page;
-  @include flex-center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background-color: rgb(23, 28, 23);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .controlers {
@@ -310,124 +337,131 @@ video {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
 
+.camera-view {
+  margin: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+}
 
-  .camera-view {
-    margin: 2em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.camera-view__intructions {
+  position: absolute;
+}
 
-    &__intructions {
-      position: absolute;
-    }
+.camera-view.error span {
+  color: rgba(255, 255, 255, 0.9);
+}
 
-    &.error span {
-      color: rgba(255, 255, 255, 0.9);
-    }
-    span {
-      font-size: 1.2em;
-      font-weight: bold;
-      color: rgba(0, 0, 0, 0.4);
-    }
-  }
-  .player {
-    border-radius: 1.4em;
-    box-shadow: 0 2em 10em 4em rgba(255, 255, 255, 0.1);
-  }
+.camera-view span {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.4);
+}
 
-  .buttons-group {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    position: absolute;
-    bottom: 3em;
-  }
+.player {
+  max-width: 100vw;
+  height: auto;
+  aspect-ratio: 1/1;
+}
 
-  .button--record,
-  .button--pause {
-    cursor: pointer;
-    display: block;
+.buttons-group {
+  display: flex;
+  width: 100%;
+  background-color: #4dba87;
+  flex-direction: row;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  border-bottom: #4dba87 0.5em solid;
+}
+
+.button--record,
+.button--pause {
+  cursor: pointer;
+  display: block;
+  background-color: red;
+  text-transform: uppercase;
+  color: white;
+  border: 2px solid white;
+  border-radius: 4em;
+  width: 4em;
+  height: 4em;
+  outline: none;
+  transition: all ease-in 150ms;
+}
+
+.button--record {
+  margin-left: 4em;
+  box-shadow: #4dba87 0px 0px 0px 10px;
+}
+
+.button--pause {
+  opacity: 0.5;
+  background-color: grey;
+  font-weight: bolder;
+  margin: 0.75em;
+  width: 2.5em;
+  height: 2.5em;
+}
+
+.button--pause__active {
+  opacity: 1;
+  background-color: #4dba87;
+}
+
+.button--record:hover {
+  border-width: 4px;
+  background-color: red;
+}
+
+.button--pause:hover {
+  border-width: 4px;
+  background-color: #4dba87;
+}
+
+.button--record__recording {
+  animation: recording 1s infinite alternate;
+}
+
+.button--record__recording.paused {
+  opacity: 0.8;
+  animation: recording_paused 1s infinite alternate;
+}
+
+@keyframes recording {
+  from {
     background-color: red;
-    text-transform: uppercase;
-    color: white;
-    border: 2px solid white;
-    border-radius: 4em;
-    width: 4em;
-    height: 4em;
-    outline: none;
-    transition: all ease-in 150ms;
+    border-width: 16px;
+    color: transparent;
   }
-
-  .button--record {
-    margin-left: 4em;
+  to {
+    background-color: white;
+    border-color: red;
+    border-width: 16px;
+    color: transparent;
   }
+}
 
-  .button--pause {
-    opacity: 0.5;
-    background-color: grey;
-    font-weight: bolder;
-    margin: 0.75em;
-    width: 2.5em;
-    height: 2.5em;
-
-    &__active {
-      opacity: 1;
-      background-color: #4dba87;
-    }
+@keyframes recording_paused {
+  from {
+    background-color: rgb(124, 72, 72);
+    border-color: rgb(124, 72, 72);
+    border-width: 16px;
+    color: transparent;
   }
-
-  .button--record:hover {
-    border-width: 4px;
-    background-color: red;
+  to {
+    background-color: lightgray;
+    border-color: rgb(124, 72, 72);
+    border-width: 16px;
+    color: transparent;
   }
+}
 
-  .button--pause:hover {
-    border-width: 4px;
-    background-color: #4dba87;
-  }
-
-  .button--record__recording {
-    animation: recording 1s infinite alternate;
-  }
-
-  .button--record__recording.paused {
-    opacity: 0.8;
-    animation: recording_paused 1s infinite alternate;
-  }
-
-  @keyframes recording {
-    from {
-      background-color: red;
-      border-width: 16px;
-      color: transparent;
-    }
-    to {
-      background-color: white;
-      border-color: red;
-      border-width: 16px;
-      color: transparent;
-    }
-  }
-
-  @keyframes recording_paused {
-    from {
-      background-color: rgb(124, 72, 72);
-      border-color: rgb(124, 72, 72);
-      border-width: 16px;
-      color: transparent;
-    }
-    to {
-      background-color: lightgray;
-      border-color: rgb(124, 72, 72);
-      border-width: 16px;
-      color: transparent;
-    }
-  }
-
-  .audio,
-  .canvas {
-    display: none;
-  }
+.audio,
+.canvas {
+  display: none;
 }
 </style>
