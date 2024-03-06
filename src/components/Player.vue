@@ -393,7 +393,7 @@ video {
 }
 
 .button--record {
-  margin-left: 4em;
+  margin-left: 3.33281em;
 }
 
 .button--pause {
@@ -417,7 +417,8 @@ video {
   color: white;
   position: absolute;
   top: -2rem;
-  left: 44.5%;
+  left: 0;
+  width: 100%;
 }
 
 .button--record:hover {
