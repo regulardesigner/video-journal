@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import constraints from "@/helpers/constraints.js";
 import RecordedVideosList from "@/components/RecordedVideosList";
 import { indexedDB } from "@/mixins/indexedDB";
@@ -51,10 +50,6 @@ export default {
 
   components: {
     RecordedVideosList
-  },
-
-  computed: {
-    ...mapGetters(["getCount"])
   },
 
   watch: {
