@@ -90,11 +90,11 @@ export default {
       const player = this.$refs.player;
       const canvas = this.$refs.canvas;
       const audio = this.$refs.audio;
-      //
+
       const stream = canvas.captureStream(25);
-      // stream.addTrack(player.srcObject.getAudioTracks()[0]);
-      //
+
       const options = { mineType: "video/webm; codecs=vp9" };
+
       this.mediaRecorder = new MediaRecorder(stream, options);
 
       // Get device capabilities informations
@@ -158,7 +158,7 @@ export default {
         // Put the image data back onto the canvas
         ctx.putImageData(pixels, 0, 0);
         // Add a text overlay on top of the video
-        this.addTextToCanvas("Video Journal");
+        this.addTextToCanvas("😀 Video Journal");
       }, 40); // The interval is set to 40 milliseconds, so the video frame is updated 25 times per second (1000ms/40ms = 25fps)
     },
 
@@ -173,17 +173,12 @@ export default {
 
       ctx.fillStyle = "#4dba87";
       ctx.fillRect(0, 0, 520, 40);
-      ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 0;
-      ctx.shadowBlur = 3;
-      ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
       ctx.textAlign = "left";
-      ctx.font = "Bold 14px Monospace";
+      ctx.font = "Bold 16px Monospace";
       ctx.fillStyle = "rgba(255, 255, 255, 1)";
       ctx.fillText(title, 16, 25);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-      ctx.font = "Bold 14px Monospace";
       ctx.textAlign = "right";
+      ctx.fillStyle = "rgba(255, 255, 255, 1)";
       ctx.fillText(today, 500, 25);
     },
 
@@ -202,10 +197,13 @@ export default {
     startRecord() {
       if (this.mediaRecorder.state === "inactive") {
         this.mediaRecorder.ondataavailable = this.saveVideoChunks;
+
         this.rec_button = "button--record__recording";
+
         this.mediaRecorder.stream.addTrack(
           this.$refs.audio.srcObject.getAudioTracks()[0]
         );
+
         this.mediaRecorder.start();
       }
     },
@@ -221,7 +219,9 @@ export default {
     pauseRecord() {
       if (this.mediaRecorder.state === "recording") {
         this.pause_button = "button--pause__active";
+
         this.rec_button = "button--record__recording paused";
+
         this.mediaRecorder.pause();
       }
     },
@@ -229,7 +229,9 @@ export default {
     resumeRecord() {
       if (this.mediaRecorder.state === "paused") {
         this.rec_button = "button--record__recording";
+
         this.pause_button = "";
+
         this.mediaRecorder.resume();
       }
     },
