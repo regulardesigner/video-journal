@@ -1,7 +1,7 @@
 <template>
   <header class="block-header">
     <span class="brand">
-      <span class="brand-icon">😺 </span>
+      <header-emoji-select @emoji-selected="handleEmojiSelect" />
       <span class="brand-name">Video Journal</span>
     </span>
     <span class="navigation">
@@ -11,8 +11,14 @@
 </template>
 
 <script>
+import HeaderEmojiSelect from "./HeaderEmojiSelect.vue";
+
 export default {
   name: "video-header",
+
+  components: {
+    HeaderEmojiSelect
+  },
 
   methods: {
     handleNavigationClick() {

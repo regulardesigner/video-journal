@@ -5,18 +5,24 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    count: 0
+    selectedEmoji: "😀"
   },
 
   getters: {
-    getCount(state) {
-      return state.count;
+    getEmoji(state) {
+      return state.selectedEmoji;
     }
   },
 
   mutations: {
-    increment(state) {
-      state.count++;
+    SET_EMOJI(state, emoji) {
+      state.selectedEmoji = emoji;
+    }
+  },
+
+  actions: {
+    setEmoji({ commit }, emoji) {
+      commit("SET_EMOJI", emoji);
     }
   }
 });

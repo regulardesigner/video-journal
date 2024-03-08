@@ -158,7 +158,9 @@ export default {
         // Put the image data back onto the canvas
         ctx.putImageData(pixels, 0, 0);
         // Add a text overlay on top of the video
-        this.addTextToCanvas("😀 Video Journal");
+        this.addTextToCanvas(
+          `${this.$store.state.selectedEmoji} Video Journal`
+        );
       }, 40); // The interval is set to 40 milliseconds, so the video frame is updated 25 times per second (1000ms/40ms = 25fps)
     },
 
